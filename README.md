@@ -23,3 +23,30 @@ This project demonstrates the **containerization, deployment, and CI/CD pipeline
   docker run --rm -p 4499:4499 wisecow:local
   curl http://localhost:4499/
 
+ -- docker tag wisecow:local <your-dockerhub-username>/wisecow:latest
+ -- docker push <your-dockerhub-username>/wisecow:latest
+
+### 2. Kubernetes Deployment
+-kubectl apply -f wisecow.yaml
+  kubectl get pods
+  kubectl get svc wisecow-service
+
+### 3. CI/CD Pipeline
+
+-Configured GitHub Actions workflow (.github/workflows/ci.yml):
+
+-On each push to main:
+
+-Build Docker image.
+
+-Push to Docker Hub.
+
+## Secrets used:
+
+ -- DOCKERHUB_USERNAME
+
+ -- DOCKERHUB_TOKEN
+
+
+
+
