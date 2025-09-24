@@ -30,29 +30,3 @@ jobs:
         tags: ${{ secrets.DOCKERHUB_USERNAME }}/wisecow:latest
         file: ./Dockerfile
 
-  deploy:
-    needs: build-and-push
-    runs-on: ubuntu-latest
-    if: ${{ secrets.KUBE_CONFIG }} != ''
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v4
-
-    - name: Setup kubectl
-      uses: azure/setup-kubectl@v3
-      with:
-        version: 'latest'
-
-    - name: Configure Kubeconfig
-      run: |
-        echo "${{ secrets.KUBE_CONFIG }}" > kubeconfig
-        export KUBECONFIG=$PWD/kubeconfig
-        kubectl config view
-    - name: Update image and apply manifests
-      run: |
-        # Replace image placeholder
-        sed -i "s|<your-repo-or-registry>/wisecow:latest|${{ secrets.DOCKERHUB_USERNAME }}/wisecow:latest|g" k8s/deployment.yaml
-        kubectl apply -f k8s/namespace.yaml
-        kubectl apply -f k8s/deployment.yaml
-        kubectl apply -f k8s/service.yaml
-        kubectl apply -f k8s/ingress-tls.yaml || true
